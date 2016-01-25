@@ -69,11 +69,11 @@
     <Reference Include="ProBuilderCore-Unity5">
       <HintPath>Assets\ProCore\ProBuilder\Classes\ProBuilderCore-Unity5.dll</HintPath>
     </Reference>
-    <Reference Include="KDTree">
-      <HintPath>Assets\ProCore\ProBuilder\Classes\ClassesLib\KDTree.dll</HintPath>
-    </Reference>
     <Reference Include="ProBuilderMeshOps-Unity5">
       <HintPath>Assets\ProCore\ProBuilder\Classes\ProBuilderMeshOps-Unity5.dll</HintPath>
+    </Reference>
+    <Reference Include="KDTree">
+      <HintPath>Assets\ProCore\ProBuilder\Classes\ClassesLib\KDTree.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -81,9 +81,23 @@
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Icosphere FFT\Scripts\IcoBumpin.cs" />
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Instantiation\ProBuilderInstantiate.cs" />
     <Compile Include="Assets\ProCore\ProBuilder\API Examples\Misc\HueCube.cs" />
+    <Compile Include="Assets\Scripts\FileManager.cs" />
     <Compile Include="Assets\Scripts\GameCamera.cs" />
+    <Compile Include="Assets\Scripts\GameData.cs" />
+    <Compile Include="Assets\Scripts\GameHUD.cs" />
+    <Compile Include="Assets\Scripts\HexMap.cs" />
     <Compile Include="Assets\Scripts\HexMapSpawner.cs" />
     <Compile Include="Assets\Scripts\HexMapTile.cs" />
+    <Compile Include="Assets\Scripts\InstructionsPanel.cs" />
+    <Compile Include="Assets\Scripts\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\MapManager.cs" />
+    <Compile Include="Assets\Scripts\MusicPlayer.cs" />
+    <Compile Include="Assets\Scripts\OptionsPanel.cs" />
+    <Compile Include="Assets\Scripts\PanelBaseClass.cs" />
+    <Compile Include="Assets\Scripts\PausePanel.cs" />
+    <Compile Include="Assets\Scripts\ReadyPanel.cs" />
+    <Compile Include="Assets\Scripts\SelectedTilePanelMngr.cs" />
+    <Compile Include="Assets\Scripts\StartMenuMngr.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\PBS Materials Variety Pack\readme.txt" />

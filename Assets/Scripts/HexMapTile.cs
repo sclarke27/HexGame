@@ -2,20 +2,35 @@
 using UnityEngine.UI;
 using System.Collections;
 
+[System.Serializable]
+public enum HexTileTypes
+{
+    GRASS = 4,
+    SAND = 3,
+    STONE = 2,
+    WATER = 1,
+    NONE = 0
+
+}
+
+[System.Serializable]
 public class HexMapTile : MonoBehaviour {
 
     private MeshRenderer tileMesh;
     private float _tileWidth = 2;
     private float _tileHeight = 2;
-	private bool _isSelected = false;
-	private Vector3 _tileCoords = new Vector2();
-	private Color defaultColor;
-    private Canvas uiCanvas;
+    private bool _isSelected = false;
+    private Vector3 _tileCoords = new Vector2();
+    private HexTileTypes _tileType = HexTileTypes.NONE;
+
+    private Color defaultColor;
 	public Text coordText;
 	public Text posText;
 
     public Material[] hexMaterials;
+    private MapManager mapManager;
 
+    
     public float TileWidth
     {
         get { return _tileWidth; }
@@ -33,17 +48,30 @@ public class HexMapTile : MonoBehaviour {
 		get { return _isSelected; }
 		set { _isSelected = value; }
 	}
-    
-	public Vector3 TileCoords 
+
+    public Vector3 TileCoords 
 	{
 		get { return _tileCoords; }
 		set { _tileCoords = value; }
 	}
 
+    public HexTileTypes TileType
+    {
+        get { return _tileType; }
+        set { _tileType = value; }
+    }
+
+    public HexMapTile()
+    {
+        _tileCoords = new Vector2();
+        _tileType = HexTileTypes.NONE;
+    }
+
     // Use this for initialization
 	void Start () {
-		tileMesh = transform.GetComponentInChildren<MeshRenderer>();
-        uiCanvas = transform.GetComponentInChildren<Canvas>();
+        mapManager = MapManager.Instance;
+        tileMesh = transform.GetComponentInChildren<MeshRenderer>();
+        //uiCanvas = transform.GetComponentInChildren<Canvas>();
         
         if (tileMesh == null) {
 			Debug.LogError ("tile mesh not found", tileMesh);
@@ -51,14 +79,9 @@ public class HexMapTile : MonoBehaviour {
 		}
 
         Material newMat = hexMaterials[Mathf.RoundToInt(Random.Range(0, hexMaterials.Length))];
-        tileMesh.material = newMat;
+        //tileMesh.material = newMat;
         defaultColor = tileMesh.GetComponent<Renderer>().material.color;
     }
-
-	// Update is called once per frame
-	void Update () {
-        //Debug.Log(tileMesh);
-	}
 
 	public void SetTilePos(Vector3 pos) {
 		transform.position = pos;
@@ -74,7 +97,24 @@ public class HexMapTile : MonoBehaviour {
 		coordText.text = TileCoords.x + "," + TileCoords.z;
 	}
 
-	void OnMouseDown() {
+    public void SetSelected(bool selected)
+    {
+        Debug.Log("Selected " + TileCoords.x + "," + TileCoords.y);
+        IsSelected = selected;
+        Color tempColor = new Color();
+        if (IsSelected)
+        {
+            tempColor = new Color(1f, 0f, 0f, tileMesh.material.color.a);
+        }
+        else {
+            tempColor = defaultColor;
+        }
+        tileMesh.material.color = tempColor;
+    }
+
+    void OnMouseDown() {
+        mapManager.SelectMapTile(this);
+        /*
 		Debug.Log ("click");
 		IsSelected = !IsSelected;
 		Color tempColor = new Color ();
@@ -84,5 +124,6 @@ public class HexMapTile : MonoBehaviour {
 			tempColor = defaultColor;
 		}
 		tileMesh.material.color = tempColor;
-	}
+        */
+    }
 }
