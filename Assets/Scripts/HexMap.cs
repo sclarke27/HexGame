@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
 public class HexMap {
 
     private List<HexMapTile> _hexTiles = new List<HexMapTile>();
@@ -10,7 +9,7 @@ public class HexMap {
 
     public HexMap()
     {
-       // _hexTiles = new List<HexMapTile>();
+        _hexTiles = new List<HexMapTile>();
         _mapName = "TestMap";
     }
     

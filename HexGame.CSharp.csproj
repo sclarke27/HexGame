@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\PausePanel.cs" />
     <Compile Include="Assets\Scripts\ReadyPanel.cs" />
     <Compile Include="Assets\Scripts\SelectedTilePanelMngr.cs" />
+    <Compile Include="Assets\Scripts\SerializableMap.cs" />
     <Compile Include="Assets\Scripts\StartMenuMngr.cs" />
   </ItemGroup>
   <ItemGroup>

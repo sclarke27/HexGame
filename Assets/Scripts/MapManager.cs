@@ -82,7 +82,23 @@ public class MapManager : MonoBehaviour {
     public void SaveMapData()
     {
         Debug.Log("Save");
-        FileManager.Save(MapManager.Instance.MapData);
+        SerializableMap saveFile = new SerializableMap();
+        saveFile.MapName = "New Derp";
+        int savedTileCount = 0;
+        for (int i = 0; i < hexMap.HexTiles.Count; i++)
+        {
+            HexMapTile currTile = hexMap.HexTiles[i];
+            TileData tempData = new TileData();
+            tempData.TileType = currTile.HexTileData.TileType;
+            tempData.TileCoordX = currTile.TileCoords.x;
+            tempData.TileCoordY = currTile.TileCoords.y;
+            tempData.TileCoordZ = currTile.TileCoords.z;
+            Debug.Log("Saved tile: " + currTile.TileCoords.x + "," + currTile.TileCoords.z);
+            saveFile.HexTiles.Add(tempData);
+            savedTileCount++;
+        }
+        FileManager.Save(saveFile);
+        Debug.Log("Saved " + savedTileCount + " total tiles");
     }
 
     public void AddTile(HexMapTile tempTile)
@@ -91,13 +107,34 @@ public class MapManager : MonoBehaviour {
 
     }
 
+    public void ClearMapTiles()
+    {
+        MapManager.Instance.mapSpawner.ClearMapRoot();
+        MapManager.Instance.mapSpawner.DrawMapRoot();
+    }
+
     public void LoadMapData()
     {
-        Debug.Log("Load");
+        int mapNumber = FileManager.LoadedMapCount();
+        Debug.Log("Load Map #" + mapNumber);
+
+        SerializableMap loadedData = new SerializableMap();
         HexMap newMap = new HexMap();
-        newMap = FileManager.LoadMapData(0);
+        loadedData = FileManager.LoadMapData(mapNumber);
+        Debug.Log(loadedData.MapName);
+        MapManager.Instance.ClearMapTiles();
+        for (int i = 0; i < loadedData.HexTiles.Count; i++)
+        {
+            Debug.Log(loadedData.HexTiles[i].TileCoordX + "'" + loadedData.HexTiles[i].TileCoordZ + " type:" + loadedData.HexTiles[i].TileType);
+            HexMapTile tempTile = MapManager.Instance.mapSpawner.SpawnNewTile();
+            tempTile.SetTileCoords(new Vector3(loadedData.HexTiles[i].TileCoordX, loadedData.HexTiles[i].TileCoordY, loadedData.HexTiles[i].TileCoordZ));
+            tempTile.SetTileType(loadedData.HexTiles[i].TileType);
+            newMap.AddTile(tempTile);
+        }
+
         MapManager.Instance.MapData = newMap;
         MapManager.Instance.mapSpawner.DrawMapTiles();
+
     }
 
     public void DrawEmptyMap()

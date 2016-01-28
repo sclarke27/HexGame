@@ -6,7 +6,7 @@ public class HexMapSpawner {
     private HexMapTile baseTileObject;
     //private MeshRenderer baseTileMesh;
     private bool mapDirty = true;
-    private int totalTiles = 500;
+    private int totalTiles = 100;
     private int mapWidth = 0;
     private int totalTilesX = 0;
     private int totalTilesZ = 0;
@@ -22,7 +22,7 @@ public class HexMapSpawner {
 
     }
 
-    private void DrawMapRoot()
+    public void DrawMapRoot()
     {
         mapWidth = (int)Mathf.Sqrt((float)totalTiles);
         totalTilesX = Mathf.RoundToInt(mapWidth - (mapWidth * 0.75f));
@@ -34,7 +34,7 @@ public class HexMapSpawner {
 
     }
 
-    private void ClearMapRoot()
+    public void ClearMapRoot()
     {
         if(mapRootObject != null)
         {
@@ -44,6 +44,11 @@ public class HexMapSpawner {
         mapRootObject = null;
     }
 
+    public HexMapTile SpawnNewTile()
+    {
+        return GameObject.Instantiate(baseTileObject, new Vector3(0, 0, 0), Quaternion.identity) as HexMapTile;
+    }
+
     public void DrawMapTiles()
     {
         ClearMapRoot();
@@ -51,32 +56,20 @@ public class HexMapSpawner {
 
         MapManager mapManager = MapManager.Instance;
         HexMap mapData = mapManager.MapData;
-        foreach(HexMapTile tileData in mapManager.MapData.HexTiles)
-        {
-            HexMapTile tempTile = GameObject.Instantiate(tileData, new Vector3(0, 0, 0), Quaternion.identity) as HexMapTile;
-            tempTile.transform.parent = mapRootObject.transform;
-            tempTile.SetTileCoords(new Vector3(tileData.TileCoords.x, 0f, tileData.TileCoords.z));
-        }
-        /*
+
         int tilecount = 0;
         baseTileObject.gameObject.SetActive(true);
-        MapManager mapManager = MapManager.Instance;
-
-		for (var x = -totalTilesX; x < totalTilesX; x++)
+        foreach (HexMapTile mapTile in mapManager.MapData.HexTiles)
         {
-			for (var z = -totalTilesZ; z < totalTilesZ; z++)
-            {
-                HexMapTile tempTile = GameObject.Instantiate(baseTileObject, new Vector3(0, 0, 0), Quaternion.identity) as HexMapTile;
-                tempTile.transform.parent = mapRootObject.transform;
-                tempTile.SetTileCoords(new Vector3(x, 0f, z));
-                mapManager.AddTile(tempTile);
-                tilecount++;
-            }
-
+            HexMapTile tempTile = (mapTile.transform == null) ? SpawnNewTile() : mapTile;
+            tempTile.transform.parent = mapRootObject.transform;
+            tempTile.gameObject.SetActive(true);
+            tempTile.SetTileCoords(new Vector3(mapTile.TileCoords.x, 0f, mapTile.TileCoords.z));
+            tempTile.SetTileType(mapTile.HexTileData.TileType);
+            tilecount++;
         }
-        Debug.Log("Total Tites:" + tilecount);
+        Debug.Log("Total Tites:" + tilecount + " loaded");
         baseTileObject.gameObject.SetActive(false);
-        */
     }
 
     public void DrawEmptyMap()
@@ -92,10 +85,11 @@ public class HexMapSpawner {
         {
             for (var z = -totalTilesZ; z < totalTilesZ; z++)
             {
-                HexMapTile tempTile = GameObject.Instantiate(baseTileObject, new Vector3(0, 0, 0), Quaternion.identity) as HexMapTile;
+                HexMapTile tempTile = SpawnNewTile();
                 tempTile.transform.parent = mapRootObject.transform;
-                tempTile.SetTileCoords(new Vector3(x, 0f, z));
                 mapManager.AddTile(tempTile);
+                tempTile.SetTileCoords(new Vector3(x, 0f, z));
+                tempTile.SetTileType(HexTileTypes.NONE);
                 tilecount++;
             }
 
