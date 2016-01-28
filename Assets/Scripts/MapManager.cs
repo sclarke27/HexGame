@@ -73,10 +73,6 @@ public class MapManager : MonoBehaviour {
     private void UpdateSelectedTilePanel()
     {
         selectedTilePanel.SetSelectedTile(selectedTile);
-        //selectedTilePanel.gameObject.SetActive(selectedTile != null);
-        
-
-
     }
 
     public void SaveMapData()
@@ -104,7 +100,6 @@ public class MapManager : MonoBehaviour {
     public void AddTile(HexMapTile tempTile)
     {
         MapManager.Instance.hexMap.AddTile(tempTile);
-
     }
 
     public void ClearMapTiles()
@@ -113,9 +108,19 @@ public class MapManager : MonoBehaviour {
         MapManager.Instance.mapSpawner.DrawMapRoot();
     }
 
-    public void LoadMapData()
+    public void ShowLoadMapDialog()
     {
-        int mapNumber = FileManager.LoadedMapCount();
+        SavedGamesPanel.Instance.Show();
+    }
+
+    public void LoadMapData(int mapNumber)
+    {
+        int mapCount = FileManager.LoadedMapCount();
+        if(mapNumber > mapCount)
+        {
+            Debug.Log("Map index out of range");
+            return;
+        }
         Debug.Log("Load Map #" + mapNumber);
 
         SerializableMap loadedData = new SerializableMap();
