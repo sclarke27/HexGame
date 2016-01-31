@@ -18,6 +18,7 @@ public class HexMapSpawner {
     public HexMapSpawner() {
         Debug.Log("Hex Map Spawner: start");
         baseTileObject = GameObject.FindObjectOfType<HexMapTile>();
+        baseTileObject.gameObject.SetActive(false);
         //baseTileMesh = GameObject.FindObjectOfType<MeshRenderer>();
 
     }
@@ -25,8 +26,10 @@ public class HexMapSpawner {
     public void DrawMapRoot()
     {
         mapWidth = (int)Mathf.Sqrt((float)totalTiles);
-        totalTilesX = Mathf.RoundToInt(mapWidth - (mapWidth * 0.75f));
-        totalTilesZ = mapWidth;
+        //totalTilesX = Mathf.RoundToInt(mapWidth - (mapWidth * 0.75f));
+        //totalTilesZ = mapWidth;
+        totalTilesX = 3;
+        totalTilesZ = 10;
 
         mapRootObject = new GameObject();
         mapRootObject.name = "HexTilesParent";

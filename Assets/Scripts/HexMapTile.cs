@@ -62,9 +62,9 @@ public class HexMapTile : MonoBehaviour {
     private bool _isSelected = false;
     private float _tileWidth = 2;
     private float _tileHeight = 2;
-
-
+    private bool _debugTile = false;
     private Color defaultColor;
+
 	public Text coordText;
 	public Text posText;
 
@@ -114,11 +114,23 @@ public class HexMapTile : MonoBehaviour {
         mapManager = MapManager.Instance;
         tileMesh = transform.GetComponentInChildren<MeshRenderer>();
         //uiCanvas = transform.GetComponentInChildren<Canvas>();
-        Debug.Log("tile started");
+        
         if (tileMesh == null) {
 			Debug.LogError ("tile mesh not found", tileMesh);
 			return;
 		}
+
+        if(_debugTile)
+        {
+            posText.gameObject.SetActive(true);
+            coordText.gameObject.SetActive(true);
+        }
+        else
+        {
+            posText.gameObject.SetActive(false);
+            coordText.gameObject.SetActive(false);
+
+        }
 
         Material newMat = hexMaterials[Mathf.RoundToInt(Random.Range(0, hexMaterials.Length))];
         //tileMesh.material = newMat;

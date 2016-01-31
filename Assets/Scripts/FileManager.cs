@@ -7,25 +7,38 @@ using System.IO;
 public static class FileManager
 {
 
+    private static string filePath = Application.persistentDataPath + "/";
+    private static string fileName = "savedGames.gd";
     public static List<SerializableMap> savedGames = new List<SerializableMap>();
 
+    public static void SaveAtIndex(int index, SerializableMap mapData)
+    {
+
+    }
+
     //it's static so we can call it from anywhere
-    public static void Save(SerializableMap mapData)
+    public static void SaveNew(SerializableMap mapData)
     {
         FileManager.savedGames.Add(mapData);
+        WriteSaveFile();
+
+        Debug.Log(filePath + fileName);
+    }
+
+    private static void WriteSaveFile()
+    {
         BinaryFormatter bf = new BinaryFormatter();
-        //Application.persistentDataPath is a string, so if you wanted you can put that into debug.log if you want to know where save games are located
-        FileStream file = File.Create(Application.persistentDataPath + "/savedGames.gd"); //you can call it anything you want
+        FileStream file = File.Create(filePath + fileName); //you can call it anything you want
         try
         {
             bf.Serialize(file, FileManager.savedGames);
         }
-        catch(IOException ex)
+        catch (IOException ex)
         {
             Debug.LogError(ex);
         }
         file.Close();
-        Debug.Log(Application.persistentDataPath + "/savedGames.gd");
+        CacheMapData();
     }
 
     public static SerializableMap LoadMapData(int mapIndex)
@@ -40,17 +53,13 @@ public static class FileManager
 
     public static void CacheMapData()
     {
-        FileStream file = File.Open(Application.persistentDataPath + "/savedGames.gd", FileMode.Open);
+        FileStream file = File.Open(filePath + fileName, FileMode.Open);
         BinaryFormatter bf = new BinaryFormatter();
         try {
-            if (File.Exists(Application.persistentDataPath + "/savedGames.gd"))
+            if (File.Exists(filePath + fileName))
             {
-                
-                
                 FileManager.savedGames = (List<SerializableMap>)bf.Deserialize(file);
                 Debug.Log("Cached " + FileManager.savedGames.Count.ToString() + " saved maps.");
-                
-
             }
         }
         catch(IOException ex)

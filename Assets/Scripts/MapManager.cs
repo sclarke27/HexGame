@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 
 public class MapManager : MonoBehaviour {
 
@@ -11,6 +12,7 @@ public class MapManager : MonoBehaviour {
 
     public bool inEdtiorMode = false;
     public SelectedTilePanelMngr selectedTilePanel;
+    public InputField mapNameInput;
 
     public static MapManager Instance
     {
@@ -79,7 +81,7 @@ public class MapManager : MonoBehaviour {
     {
         Debug.Log("Save");
         SerializableMap saveFile = new SerializableMap();
-        saveFile.MapName = "New Derp";
+        saveFile.MapName = mapNameInput.text;
         int savedTileCount = 0;
         for (int i = 0; i < hexMap.HexTiles.Count; i++)
         {
@@ -93,7 +95,7 @@ public class MapManager : MonoBehaviour {
             saveFile.HexTiles.Add(tempData);
             savedTileCount++;
         }
-        FileManager.Save(saveFile);
+        FileManager.SaveNew(saveFile);
         Debug.Log("Saved " + savedTileCount + " total tiles");
     }
 
@@ -127,10 +129,11 @@ public class MapManager : MonoBehaviour {
         HexMap newMap = new HexMap();
         loadedData = FileManager.LoadMapData(mapNumber);
         Debug.Log(loadedData.MapName);
+        mapNameInput.text = loadedData.MapName;
         MapManager.Instance.ClearMapTiles();
         for (int i = 0; i < loadedData.HexTiles.Count; i++)
         {
-            Debug.Log(loadedData.HexTiles[i].TileCoordX + "'" + loadedData.HexTiles[i].TileCoordZ + " type:" + loadedData.HexTiles[i].TileType);
+            //Debug.Log(loadedData.HexTiles[i].TileCoordX + "'" + loadedData.HexTiles[i].TileCoordZ + " type:" + loadedData.HexTiles[i].TileType);
             HexMapTile tempTile = MapManager.Instance.mapSpawner.SpawnNewTile();
             tempTile.SetTileCoords(new Vector3(loadedData.HexTiles[i].TileCoordX, loadedData.HexTiles[i].TileCoordY, loadedData.HexTiles[i].TileCoordZ));
             tempTile.SetTileType(loadedData.HexTiles[i].TileType);
