@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class MapManager : MonoBehaviour {
 
-    private HexMapTile selectedTile;
     private static MapManager _instance;
+    private HexMapTile selectedTile;
     private HexMap hexMap;
     private HexMapSpawner mapSpawner;
+    private int loadedMapFileIndex = -1;
 
     public bool inEdtiorMode = false;
     public SelectedTilePanelMngr selectedTilePanel;
@@ -25,7 +25,18 @@ public class MapManager : MonoBehaviour {
         get { return hexMap; }
         set { hexMap = value; }
     }
-    
+
+    public int LoadedMapcount
+    {
+        get { return FileManager.LoadedMapCount(); }
+    }
+
+    public int LoadedMapFileIndex
+    {
+        get { return loadedMapFileIndex; }
+        set { loadedMapFileIndex = value; }
+    }
+
     void Awake()
     {
         if(_instance == null)
@@ -38,8 +49,6 @@ public class MapManager : MonoBehaviour {
         }
     }
 
-
-	// Use this for initialization
 	void Start () {
         Debug.Log("MapManager: start");
         hexMap = new HexMap();
@@ -48,7 +57,6 @@ public class MapManager : MonoBehaviour {
         
     }
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
@@ -80,22 +88,33 @@ public class MapManager : MonoBehaviour {
     public void SaveMapData()
     {
         Debug.Log("Save");
+
         SerializableMap saveFile = new SerializableMap();
         saveFile.MapName = mapNameInput.text;
+
         int savedTileCount = 0;
         for (int i = 0; i < hexMap.HexTiles.Count; i++)
         {
             HexMapTile currTile = hexMap.HexTiles[i];
+
             TileData tempData = new TileData();
             tempData.TileType = currTile.HexTileData.TileType;
             tempData.TileCoordX = currTile.TileCoords.x;
             tempData.TileCoordY = currTile.TileCoords.y;
             tempData.TileCoordZ = currTile.TileCoords.z;
-            Debug.Log("Saved tile: " + currTile.TileCoords.x + "," + currTile.TileCoords.z);
+
             saveFile.HexTiles.Add(tempData);
             savedTileCount++;
         }
-        FileManager.SaveNew(saveFile);
+
+        if(loadedMapFileIndex < 0)
+        {
+            FileManager.SaveNew(saveFile);
+        } else
+        {
+            FileManager.SaveAtIndex(loadedMapFileIndex, saveFile);
+        }
+        
         Debug.Log("Saved " + savedTileCount + " total tiles");
     }
 
@@ -107,30 +126,26 @@ public class MapManager : MonoBehaviour {
     public void ClearMapTiles()
     {
         MapManager.Instance.mapSpawner.ClearMapRoot();
-        MapManager.Instance.mapSpawner.DrawMapRoot();
-    }
-
-    public void ShowLoadMapDialog()
-    {
-        SavedGamesPanel.Instance.Show();
+        //MapManager.Instance.mapSpawner.DrawMapRoot();
     }
 
     public void LoadMapData(int mapNumber)
     {
-        int mapCount = FileManager.LoadedMapCount();
+        MapManager.Instance.ClearMapTiles();
+
+        int mapCount = LoadedMapcount;
         if(mapNumber > mapCount)
         {
             Debug.Log("Map index out of range");
             return;
         }
-        Debug.Log("Load Map #" + mapNumber);
-
+        LoadedMapFileIndex = mapNumber;
+        Debug.Log("Load Map #" + LoadedMapFileIndex);
         SerializableMap loadedData = new SerializableMap();
         HexMap newMap = new HexMap();
-        loadedData = FileManager.LoadMapData(mapNumber);
+        loadedData = FileManager.LoadMapData(LoadedMapFileIndex);
         Debug.Log(loadedData.MapName);
         mapNameInput.text = loadedData.MapName;
-        MapManager.Instance.ClearMapTiles();
         for (int i = 0; i < loadedData.HexTiles.Count; i++)
         {
             //Debug.Log(loadedData.HexTiles[i].TileCoordX + "'" + loadedData.HexTiles[i].TileCoordZ + " type:" + loadedData.HexTiles[i].TileType);
@@ -148,6 +163,11 @@ public class MapManager : MonoBehaviour {
     public void DrawEmptyMap()
     {
         mapSpawner.DrawEmptyMap();
+    }
+
+    public List<SerializableMap> CachedMapList
+    {
+        get { return FileManager.CachedMapList; }
     }
 
 }

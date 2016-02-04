@@ -20,22 +20,60 @@ Platform assembly: D:\projects\HexGame\hexGameTest_Data\Managed\ProBuilderMeshOp
 Loading D:\projects\HexGame\hexGameTest_Data\Managed\ProBuilderMeshOps-Unity5.dll into Unity Child Domain
 Platform assembly: D:\projects\HexGame\hexGameTest_Data\Managed\KDTree.dll (this message is harmless)
 Loading D:\projects\HexGame\hexGameTest_Data\Managed\KDTree.dll into Unity Child Domain
-- Completed reload, in  0.152 seconds
+- Completed reload, in  0.169 seconds
 Platform assembly: D:\projects\HexGame\hexGameTest_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\projects\HexGame\hexGameTest_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1200 59Hz; virtual: 3840x1200 at -1920,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.570916 ms
-Start Hex Map
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
-
-Total Tites:528
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
-
+UnloadTime: 0.626084 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 674 -> priority: 1 
-  Thread -> id: 226c -> priority: 1 
+  Thread -> id: 22a0 -> priority: 1 
+  Thread -> id: 70 -> priority: 1 
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 4.500624 ms
+
+Unloading 9 unused Assets to reduce memory usage. Loaded Objects now: 598.
+Total: 0.431929 ms (FindLiveObjects: 0.028652 ms CreateObjectMapping: 0.014967 ms MarkObjects: 0.372913 ms  DeleteObjects: 0.014967 ms)
+
+MapManager: start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Hex Map Spawner: start
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Cached 8 saved maps.
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+testLoad Map
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Load map index: 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Load Map #3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+grassy2
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Total Tites:80 loaded
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Selected -1,2
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+testClear Map
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+

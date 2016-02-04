@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 public class CustomMenuItem {
     private string _selectionHandler;
@@ -27,20 +28,28 @@ public class CustomMenuItem {
 
 }
 
-
-
 public class TopMenuManager : MonoBehaviour {
 
+    public ArrayList menuItemsData = new ArrayList();
+
     public Dropdown[] menuDropDowns;
-    private List<CustomMenuItem> fileMenu = new List<CustomMenuItem>();
+    //private List<CustomMenuItem> fileMenu = new List<CustomMenuItem>();
 
     void Start()
     {
+        LoadMenuItems();
+    }
 
+    private void LoadMenuItems ()
+    {
+        List<CustomMenuItem> fileMenu = new List<CustomMenuItem>();
         fileMenu.Add(new CustomMenuItem("New Map", "newMap"));
         fileMenu.Add(new CustomMenuItem("Load Map", "loadMap"));
         fileMenu.Add(new CustomMenuItem("Save Map", "saveMap"));
+        fileMenu.Add(new CustomMenuItem("Clear Map", "clearMap"));
         fileMenu.Add(new CustomMenuItem("Exit", "exitEditor"));
+
+        menuItemsData.Add(fileMenu);
 
         List<Dropdown.OptionData> typeOptions = new List<Dropdown.OptionData>();
         int index = 0;
@@ -50,12 +59,30 @@ public class TopMenuManager : MonoBehaviour {
             Dropdown.OptionData newOption = new Dropdown.OptionData();
             newOption.text = menuItem.MenuLabelText;
             typeOptions.Add(newOption);
-
-
             index++;
         }
         menuDropDowns[0].AddOptions(typeOptions);
         menuDropDowns[0].onValueChanged.AddListener(delegate { onMenuItemSelect(menuDropDowns[0], fileMenu[menuDropDowns[0].value]); });
+
+        List<CustomMenuItem> selectMenu = new List<CustomMenuItem>();
+        selectMenu.Add(new CustomMenuItem("Select All", "selectAll"));
+        selectMenu.Add(new CustomMenuItem("Select Neighboring", "selectNeighboring"));
+        selectMenu.Add(new CustomMenuItem("Select None", "selectNone"));
+
+        menuItemsData.Add(fileMenu);
+
+        typeOptions = new List<Dropdown.OptionData>();
+        index = 0;
+
+        foreach (CustomMenuItem menuItem in selectMenu)
+        {
+            Dropdown.OptionData newOption = new Dropdown.OptionData();
+            newOption.text = menuItem.MenuLabelText;
+            typeOptions.Add(newOption);
+            index++;
+        }
+        menuDropDowns[1].AddOptions(typeOptions);
+        menuDropDowns[1].onValueChanged.AddListener(delegate { onMenuItemSelect(menuDropDowns[1], selectMenu[menuDropDowns[1].value]); });
 
     }
 
@@ -63,16 +90,20 @@ public class TopMenuManager : MonoBehaviour {
     {
         Debug.Log("test" + selectedItem.MenuLabelText);
         MapManager mapManager = MapManager.Instance; ;
+        HudManager hudManager = HudManager.Instance;
         switch (selectedItem.SelectionHandler)
         {
             case "newMap":
                 mapManager.DrawEmptyMap();
                 break;
             case "loadMap":
-                mapManager.ShowLoadMapDialog();
+                hudManager.ShowLoadMapDialog();
                 break;
             case "saveMap":
                 mapManager.SaveMapData();
+                break;
+            case "clearMap":
+                mapManager.ClearMapTiles();
                 break;
             case "exitEditor":
                 

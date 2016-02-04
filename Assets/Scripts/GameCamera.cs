@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.EventSystems;
 
 public class GameCamera : MonoBehaviour
 {
@@ -21,6 +21,8 @@ public class GameCamera : MonoBehaviour
 
     void Update()
     {
+        EventSystem eventSystem = GameObject.FindObjectOfType<EventSystem>();
+        if (eventSystem.IsPointerOverGameObject()) return;
         //move cam
         if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
         {

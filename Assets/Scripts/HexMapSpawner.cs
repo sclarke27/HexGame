@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class HexMapSpawner {
 
@@ -28,7 +27,7 @@ public class HexMapSpawner {
         mapWidth = (int)Mathf.Sqrt((float)totalTiles);
         //totalTilesX = Mathf.RoundToInt(mapWidth - (mapWidth * 0.75f));
         //totalTilesZ = mapWidth;
-        totalTilesX = 3;
+        totalTilesX = 4;
         totalTilesZ = 10;
 
         mapRootObject = new GameObject();

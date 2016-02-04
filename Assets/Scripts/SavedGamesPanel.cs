@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class SavedGamesPanel : MonoBehaviour {
 
@@ -21,7 +19,6 @@ public class SavedGamesPanel : MonoBehaviour {
         if (_instance == null)
         {
             _instance = this;
-
         }
         else
         {
@@ -30,7 +27,7 @@ public class SavedGamesPanel : MonoBehaviour {
     }
 
     void Start () {
-        gameObject.SetActive(false);
+        
         
 	}
 
@@ -55,21 +52,21 @@ public class SavedGamesPanel : MonoBehaviour {
         gameObject.SetActive(true);
         MapManager mapManager = MapManager.Instance;
         ClearContent();
-        int rowOffset = -32;
+        int rowOffset = -30;
         int index = 0;
-        foreach(SerializableMap saveGame in FileManager.savedGames)
+        foreach(SerializableMap saveGame in mapManager.CachedMapList)
         {
             Button tempButton = GameObject.Instantiate(rowTemplate, new Vector3(0, 0, 0), Quaternion.identity) as Button;
             tempButton.transform.SetParent(scrollField.content.transform);
             tempButton.transform.localPosition = new Vector3(137.2f, -19f + (rowOffset * index), 0);
             Text buttText = tempButton.GetComponentInChildren<Text>();
             buttText.text = saveGame.MapName;
+
             tempButton.gameObject.SetActive(true);
             tempButton.name = index.ToString();
             tempButton.onClick.AddListener(delegate { selectedIndex = int.Parse(tempButton.name); });
             index++;
         }
-
     }
 
     public void LoadSelectedMap()

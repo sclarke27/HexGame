@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using UnityEngine.EventSystems;
 
 [System.Serializable]
 public enum HexTileTypes
 {
+    GOLD = 5,
     GRASS = 4,
     SAND = 3,
     STONE = 2,
@@ -69,6 +69,7 @@ public class HexMapTile : MonoBehaviour {
 	public Text posText;
 
     public Material[] hexMaterials;
+    public MeshRenderer mountainMesh;
     private MapManager mapManager;
 
     public float TileWidth
@@ -149,21 +150,31 @@ public class HexMapTile : MonoBehaviour {
         {
             case HexTileTypes.GRASS:
                 defaultColor = new Color(0f, 1f, 0f, 1f);
+                tileMesh.material = hexMaterials[1];
                 break;
             case HexTileTypes.NONE:
                 defaultColor = new Color(1f, 1f, 1f, 1f);
+
                 break;
             case HexTileTypes.SAND:
                 defaultColor = new Color(0.83f, 0.63f, 0.56f, 1f);
+                tileMesh.material = hexMaterials[3];
                 break;
             case HexTileTypes.STONE:
                 defaultColor = new Color(0.54f, 0.54f, 0.54f, 1f);
+                tileMesh.material = hexMaterials[0];
                 break;
             case HexTileTypes.WATER:
-                defaultColor = new Color(0f, 0f, 1f, 1f);
+                defaultColor = new Color(0f, 0f, 1f, 0.5f);
+                tileMesh.material = hexMaterials[2];
+                break;
+            case HexTileTypes.GOLD:
+                defaultColor = new Color(1f, 1f, 1f, 1f);
+                tileMesh.material = hexMaterials[4];
                 break;
 
         }
+
         if (!IsSelected)
         {
             tileMesh.material.color = defaultColor;
@@ -172,6 +183,17 @@ public class HexMapTile : MonoBehaviour {
             tileMesh.material.color = new Color(1f, 0f, 0f, tileMesh.material.color.a); ;
         }
         SetTilePos();
+
+
+        //temp mesh test
+        if (HexTileData.TileType == HexTileTypes.STONE)
+        {
+            mountainMesh.gameObject.SetActive(true);
+        }
+        else
+        {
+            mountainMesh.gameObject.SetActive(false);
+        }
     }
 
 	public void SetTilePos() {

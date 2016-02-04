@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -9,63 +8,66 @@ public static class FileManager
 
     private static string filePath = Application.persistentDataPath + "/";
     private static string fileName = "savedGames.gd";
-    public static List<SerializableMap> savedGames = new List<SerializableMap>();
+    private static List<SerializableMap> savedMaps = new List<SerializableMap>();
 
     public static void SaveAtIndex(int index, SerializableMap mapData)
     {
-
+        savedMaps[index] = mapData;
+        WriteSaveFile();
     }
 
-    //it's static so we can call it from anywhere
     public static void SaveNew(SerializableMap mapData)
     {
-        FileManager.savedGames.Add(mapData);
+        FileManager.savedMaps.Add(mapData);
         WriteSaveFile();
-
-        Debug.Log(filePath + fileName);
     }
 
     private static void WriteSaveFile()
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(filePath + fileName); //you can call it anything you want
+        FileStream fileStream = File.Create(filePath + fileName); 
         try
         {
-            bf.Serialize(file, FileManager.savedGames);
+            bf.Serialize(fileStream, FileManager.savedMaps);
         }
         catch (IOException ex)
         {
             Debug.LogError(ex);
         }
-        file.Close();
+        fileStream.Close();
         CacheMapData();
     }
 
     public static SerializableMap LoadMapData(int mapIndex)
     {
-        return FileManager.savedGames[mapIndex];
+        return FileManager.savedMaps[mapIndex];
     }
 
     public static int LoadedMapCount()
     {
-        return (FileManager.savedGames.Count > 0) ? FileManager.savedGames.Count - 1 : 0;
+        return (FileManager.savedMaps.Count > 0) ? FileManager.savedMaps.Count - 1 : 0;
     }
 
     public static void CacheMapData()
     {
-        FileStream file = File.Open(filePath + fileName, FileMode.Open);
+        FileStream fileStream = File.Open(filePath + fileName, FileMode.Open);
         BinaryFormatter bf = new BinaryFormatter();
         try {
             if (File.Exists(filePath + fileName))
             {
-                FileManager.savedGames = (List<SerializableMap>)bf.Deserialize(file);
-                Debug.Log("Cached " + FileManager.savedGames.Count.ToString() + " saved maps.");
+                FileManager.savedMaps = (List<SerializableMap>)bf.Deserialize(fileStream);
+                Debug.Log("Cached " + FileManager.savedMaps.Count.ToString() + " saved maps.");
             }
         }
         catch(IOException ex)
         {
             Debug.LogError(ex);
         }
-        file.Close();
+        fileStream.Close();
+    }
+
+    public static List<SerializableMap> CachedMapList
+    {
+        get { return FileManager.savedMaps; }
     }
 }
