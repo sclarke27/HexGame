@@ -8,7 +8,6 @@ public class LevelManager : MonoBehaviour
 
     private string levelName;
     private GameData gameData;
-    private GameHUD gameHUD;
     private Cursor cursor;
     //private MusicPlayer musicPlayer;
 
@@ -18,7 +17,6 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         gameData = GameObject.FindObjectOfType<GameData>();
-        gameHUD = GameObject.FindObjectOfType<GameHUD>();
         //musicPlayer = GameObject.FindObjectOfType<MusicPlayer>();
         
     }
@@ -92,7 +90,7 @@ public class LevelManager : MonoBehaviour
 
     public void MainMenu()
     {
-        LoadLevel("StartScreen");
+        LoadLevel("OpeningMenu");
         gameData.SetPlayerReady(false);
         //musicPlayer.SetInMenu(true);
     }
@@ -108,7 +106,6 @@ public class LevelManager : MonoBehaviour
         gameData.SetPaddle("left", false);
         //musicPlayer.SetInMenu(true);
         gameData.PauseGame(true);
-        gameHUD.ShowLevelComplete();
         gameData.SetPlayerReady(false);
         gameData.GainOneLife();
     }

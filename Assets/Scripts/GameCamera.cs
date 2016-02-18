@@ -64,12 +64,5 @@ public class GameCamera : MonoBehaviour
             //}
         }
     }
-
-
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
 	
 }

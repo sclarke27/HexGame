@@ -88,7 +88,7 @@ public class TopMenuManager : MonoBehaviour {
 
     public void onMenuItemSelect(Dropdown selectedDropdown, CustomMenuItem selectedItem)
     {
-        Debug.Log("test" + selectedItem.MenuLabelText);
+        Debug.Log("Menu Selected: " + selectedItem.MenuLabelText);
         MapManager mapManager = MapManager.Instance; ;
         HudManager hudManager = HudManager.Instance;
         switch (selectedItem.SelectionHandler)
@@ -106,7 +106,17 @@ public class TopMenuManager : MonoBehaviour {
                 mapManager.ClearMapTiles();
                 break;
             case "exitEditor":
-                
+                GameObject.FindObjectOfType<LevelManager>().MainMenu();
+                break;
+
+            case "selectNeighboring":
+                mapManager.SelectNeighborTiles();
+                break;
+            case "selectNone":
+                mapManager.SelectNone();
+                break;
+            case "selectAll":
+                mapManager.SelectAll();
                 break;
         }
     }

@@ -5,6 +5,7 @@ public class SerializableMap {
 
     private string _mapName = "derp";
     private List<TileData> _hexTiles = new List<TileData>();
+    
 
     public string MapName
     {
@@ -17,4 +18,5 @@ public class SerializableMap {
         get { return _hexTiles; }
         set { _hexTiles = value; }
     }
+
 }

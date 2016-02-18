@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System;
 
 public class MapManager : MonoBehaviour {
 
@@ -9,6 +10,11 @@ public class MapManager : MonoBehaviour {
     private HexMap hexMap;
     private HexMapSpawner mapSpawner;
     private int loadedMapFileIndex = -1;
+    private Dictionary<string, int> _hexTileLookup = new Dictionary<string, int>();
+
+    private List<Vector2> neighborEvenVectors = new List<Vector2>();
+    private List<Vector2> neighborOddVectors = new List<Vector2>();
+
 
     public bool inEdtiorMode = false;
     public SelectedTilePanelMngr selectedTilePanel;
@@ -37,6 +43,13 @@ public class MapManager : MonoBehaviour {
         set { loadedMapFileIndex = value; }
     }
 
+    public Dictionary<string, int> HexTileLookup
+    {
+        get { return _hexTileLookup; }
+        set { _hexTileLookup = value; }
+    }
+
+
     void Awake()
     {
         if(_instance == null)
@@ -51,6 +64,21 @@ public class MapManager : MonoBehaviour {
 
 	void Start () {
         Debug.Log("MapManager: start");
+        //setup even-q lookup vector lists
+        neighborEvenVectors.Add(new Vector2(1, -1));
+        neighborEvenVectors.Add(new Vector2(1, 0));
+        neighborEvenVectors.Add(new Vector2(0, 1));
+        neighborEvenVectors.Add(new Vector2(-1, 0));
+        neighborEvenVectors.Add(new Vector2(-1, -1));
+        neighborEvenVectors.Add(new Vector2(0, -1));
+
+        neighborOddVectors.Add(new Vector2(1, 0));
+        neighborOddVectors.Add(new Vector2(1, 1));
+        neighborOddVectors.Add(new Vector2(0, 1));
+        neighborOddVectors.Add(new Vector2(-1, 1));
+        neighborOddVectors.Add(new Vector2(-1, 0));
+        neighborOddVectors.Add(new Vector2(0, -1));
+
         hexMap = new HexMap();
         mapSpawner = new HexMapSpawner();
         FileManager.CacheMapData();
@@ -78,6 +106,59 @@ public class MapManager : MonoBehaviour {
         selectedTile = newSelectedTile;
         selectedTile.SetSelected(true);
         UpdateSelectedTilePanel();
+    }
+
+    public void SelectNeighborTiles()
+    {
+        if (selectedTile == null) return;
+        List<HexMapTile> neighbors = ReturnNeighborTiles();
+        foreach(HexMapTile neighborTile in neighbors)
+        {
+            neighborTile.SetSelected(true);
+        }
+        Debug.Log("Found " + neighbors.Count + " neighbor tiles.");
+    }
+
+    public List<HexMapTile> ReturnNeighborTiles()
+    {
+        List<HexMapTile> newTileList = new List<HexMapTile>();
+
+        if (selectedTile == null) return newTileList;
+
+        int tilesFound = 0;
+        List<Vector2> vectorLookupTable = (selectedTile.TileCoords.x % 2 == 0) ? MapManager.Instance.neighborEvenVectors : MapManager.Instance.neighborOddVectors;
+        foreach (Vector2 neighborVector in vectorLookupTable)
+        {
+            int lookupIndex = -1;
+            Vector2 lookupVector = new Vector2(selectedTile.TileCoords.x, selectedTile.TileCoords.z) + neighborVector;
+            
+            if(MapManager.Instance.HexTileLookup.TryGetValue(lookupVector.x + "," + lookupVector.y, out lookupIndex))
+            {
+                newTileList.Add(MapManager.Instance.MapData.GetTile(lookupIndex));
+                tilesFound++;
+            }
+        }
+
+
+        return newTileList;
+    }
+
+    public void SelectNone()
+    {
+        foreach(HexMapTile tile in MapManager.Instance.hexMap.HexTiles)
+        {
+            tile.SetSelected(false);
+        }
+        selectedTile = null;
+    }
+
+    public void SelectAll()
+    {
+        foreach (HexMapTile tile in MapManager.Instance.hexMap.HexTiles)
+        {
+            tile.SetSelected(true);
+        }
+        selectedTile = null;
     }
 
     private void UpdateSelectedTilePanel()
@@ -120,18 +201,25 @@ public class MapManager : MonoBehaviour {
 
     public void AddTile(HexMapTile tempTile)
     {
-        MapManager.Instance.hexMap.AddTile(tempTile);
+        hexMap.AddTile(tempTile);
+        HexTileLookup.Add(tempTile.TileCoords.x + "," + tempTile.TileCoords.z, MapManager.Instance.hexMap.HexTiles.Count - 1);
     }
 
     public void ClearMapTiles()
     {
-        MapManager.Instance.mapSpawner.ClearMapRoot();
-        //MapManager.Instance.mapSpawner.DrawMapRoot();
+        mapSpawner.ClearMapRoot();
+        selectedTile = null;
+        hexMap = new HexMap();
+        loadedMapFileIndex = -1;
+        _hexTileLookup = new Dictionary<string, int>();
+
     }
 
     public void LoadMapData(int mapNumber)
     {
-        MapManager.Instance.ClearMapTiles();
+        ClearMapTiles();
+        mapSpawner.ClearMapRoot();
+        mapSpawner.DrawMapRoot();
 
         int mapCount = LoadedMapcount;
         if(mapNumber > mapCount)
@@ -142,21 +230,20 @@ public class MapManager : MonoBehaviour {
         LoadedMapFileIndex = mapNumber;
         Debug.Log("Load Map #" + LoadedMapFileIndex);
         SerializableMap loadedData = new SerializableMap();
-        HexMap newMap = new HexMap();
+        
         loadedData = FileManager.LoadMapData(LoadedMapFileIndex);
-        Debug.Log(loadedData.MapName);
+        Debug.Log("Load Named: " + loadedData.MapName);
         mapNameInput.text = loadedData.MapName;
         for (int i = 0; i < loadedData.HexTiles.Count; i++)
         {
-            //Debug.Log(loadedData.HexTiles[i].TileCoordX + "'" + loadedData.HexTiles[i].TileCoordZ + " type:" + loadedData.HexTiles[i].TileType);
-            HexMapTile tempTile = MapManager.Instance.mapSpawner.SpawnNewTile();
+            HexMapTile tempTile = mapSpawner.SpawnNewTile();
             tempTile.SetTileCoords(new Vector3(loadedData.HexTiles[i].TileCoordX, loadedData.HexTiles[i].TileCoordY, loadedData.HexTiles[i].TileCoordZ));
             tempTile.SetTileType(loadedData.HexTiles[i].TileType);
-            newMap.AddTile(tempTile);
+            AddTile(tempTile);
         }
 
-        MapManager.Instance.MapData = newMap;
-        MapManager.Instance.mapSpawner.DrawMapTiles();
+        MapData = hexMap;
+        mapSpawner.RefreshMapTiles();
 
     }
 

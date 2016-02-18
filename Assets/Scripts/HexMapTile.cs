@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 [System.Serializable]
 public enum HexTileTypes
 {
-    GOLD = 5,
+    MUD = 5,
     GRASS = 4,
     SAND = 3,
     STONE = 2,
@@ -60,8 +60,9 @@ public class HexMapTile : MonoBehaviour {
     private TileData _tileData;
     private MeshRenderer tileMesh;
     private bool _isSelected = false;
-    private float _tileWidth = 2;
-    private float _tileHeight = 2;
+    private float _tileWidth = 2f;
+    private float _tileHeight = 2f;
+    private float _tileHeightDelta = 0;
     private bool _debugTile = false;
     private Color defaultColor;
 
@@ -107,7 +108,7 @@ public class HexMapTile : MonoBehaviour {
     {
         _tileData = new TileData();
         _tileCoords = new Vector2();
-        
+        _tileHeightDelta = Mathf.Sqrt(3) / 2;
     }
 
     // Use this for initialization
@@ -133,7 +134,7 @@ public class HexMapTile : MonoBehaviour {
 
         }
 
-        Material newMat = hexMaterials[Mathf.RoundToInt(Random.Range(0, hexMaterials.Length))];
+        //Material newMat = hexMaterials[Mathf.RoundToInt(Random.Range(0, hexMaterials.Length))];
         //tileMesh.material = newMat;
         defaultColor = tileMesh.GetComponent<Renderer>().material.color;
     }
@@ -168,7 +169,7 @@ public class HexMapTile : MonoBehaviour {
                 defaultColor = new Color(0f, 0f, 1f, 0.5f);
                 tileMesh.material = hexMaterials[2];
                 break;
-            case HexTileTypes.GOLD:
+            case HexTileTypes.MUD:
                 defaultColor = new Color(1f, 1f, 1f, 1f);
                 tileMesh.material = hexMaterials[4];
                 break;
@@ -180,7 +181,7 @@ public class HexMapTile : MonoBehaviour {
             tileMesh.material.color = defaultColor;
         } else
         {
-            tileMesh.material.color = new Color(1f, 0f, 0f, tileMesh.material.color.a); ;
+            tileMesh.material.color = new Color(1f, 0f, 0f, tileMesh.material.color.a);
         }
         SetTilePos();
 
@@ -197,11 +198,12 @@ public class HexMapTile : MonoBehaviour {
     }
 
 	public void SetTilePos() {
-        float rowNum = (TileCoords.z < 0) ? -TileCoords.z : TileCoords.z;
-        float currX = ((TileWidth * (TileWidth * 0.75f)) * TileCoords.x) + ((rowNum % 2 != 1) ? (TileWidth * 0.75f) : 0);
-        float currZ = ((TileWidth / 2.3f) * TileCoords.z);
-        float currY = 0f;
-        Vector3 pos = new Vector3(currX, currY, currZ);
+        float rowNum = (TileCoords.x < 0) ? -TileCoords.x : TileCoords.x;
+        
+        float currColumn = (((TileWidth * 0.75f)) * TileCoords.x);
+        float currRow = ((_tileHeightDelta * TileWidth) * TileCoords.z) - ((rowNum % 2 != 1) ? _tileHeightDelta : 0f);
+
+        Vector3 pos = new Vector3(currColumn, 0f, currRow);
 
         transform.position = pos;
 		posText.text = "World Pos: " + pos.x + "," + pos.z;
@@ -215,7 +217,7 @@ public class HexMapTile : MonoBehaviour {
 
     public void SetSelected(bool selected)
     {
-        Debug.Log("Selected " + TileCoords.x + "," + TileCoords.z);
+        //Debug.Log("Selected " + TileCoords.x + "," + TileCoords.z);
         IsSelected = selected;
         Color tempColor = new Color();
         if (IsSelected)

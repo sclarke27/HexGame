@@ -25,9 +25,12 @@ public class HexMap {
 
     public void AddTile(HexMapTile newTile)
     {
-        //_hexTiles.SetValue(newTile, _hexTiles.Length + 1);
         _hexTiles.Add(newTile);
     }
 
+    public HexMapTile GetTile(int tileIndex)
+    {
+        return _hexTiles[tileIndex];
+    }
 
 }
