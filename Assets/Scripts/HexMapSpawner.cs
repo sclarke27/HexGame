@@ -37,7 +37,7 @@ public class HexMapSpawner {
 
     public HexMapTile SpawnNewTile()
     {
-        return GameObject.Instantiate(baseTileObject, new Vector3(0, 0, 0), Quaternion.identity) as HexMapTile;
+        return GameObject.Instantiate(baseTileObject, new Vector3(0, 0, 0), baseTileObject.transform.localRotation) as HexMapTile;
     }
 
     public void RefreshMapTiles()

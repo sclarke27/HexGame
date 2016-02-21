@@ -41,7 +41,10 @@ public class SelectedTilePanelMngr : MonoBehaviour {
 
     private void onTypeValueChanged(Dropdown drop)
     {
-        selectedTile.SetTileType((HexTileTypes)drop.value);
+        if (selectedTile != null)
+        {
+            selectedTile.SetTileType((HexTileTypes)drop.value);
+        }
     }
 
 }

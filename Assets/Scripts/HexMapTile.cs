@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 [System.Serializable]
 public enum HexTileTypes
 {
+    VILLAGE_LARGE = 7,
+    VILLAGE_SMALL = 6,
     MUD = 5,
     GRASS = 4,
     SAND = 3,
@@ -58,20 +60,23 @@ public class HexMapTile : MonoBehaviour {
     [SerializeField]
     private Vector3 _tileCoords = new Vector3();
     private TileData _tileData;
-    private MeshRenderer tileMesh;
     private bool _isSelected = false;
     private float _tileWidth = 2f;
     private float _tileHeight = 2f;
     private float _tileHeightDelta = 0;
     private bool _debugTile = false;
     private Color defaultColor;
+    private MeshRenderer tileMesh;
+    private MapManager mapManager;
 
-	public Text coordText;
+    public Text coordText;
 	public Text posText;
 
     public Material[] hexMaterials;
     public MeshRenderer mountainMesh;
-    private MapManager mapManager;
+    public GameObject smallVillageObject;
+    public GameObject largeVillageObject;
+    public GameObject tileObject;
 
     public float TileWidth
     {
@@ -114,8 +119,7 @@ public class HexMapTile : MonoBehaviour {
     // Use this for initialization
 	void Start () {
         mapManager = MapManager.Instance;
-        tileMesh = transform.GetComponentInChildren<MeshRenderer>();
-        //uiCanvas = transform.GetComponentInChildren<Canvas>();
+        tileMesh = tileObject.GetComponentInChildren<MeshRenderer>();
         
         if (tileMesh == null) {
 			Debug.LogError ("tile mesh not found", tileMesh);
@@ -141,7 +145,7 @@ public class HexMapTile : MonoBehaviour {
 
     private void UpdateTile()
     {
-        tileMesh = transform.GetComponentInChildren<MeshRenderer>();
+        tileMesh = tileObject.GetComponentInChildren<MeshRenderer>();
         if (tileMesh == null)
         {
             Debug.LogError("tile mesh STILL not found", tileMesh);
@@ -150,6 +154,8 @@ public class HexMapTile : MonoBehaviour {
         switch (HexTileData.TileType)
         {
             case HexTileTypes.GRASS:
+            case HexTileTypes.VILLAGE_LARGE:
+            case HexTileTypes.VILLAGE_SMALL:
                 defaultColor = new Color(0f, 1f, 0f, 1f);
                 tileMesh.material = hexMaterials[1];
                 break;
@@ -187,14 +193,10 @@ public class HexMapTile : MonoBehaviour {
 
 
         //temp mesh test
-        if (HexTileData.TileType == HexTileTypes.STONE)
-        {
-            mountainMesh.gameObject.SetActive(true);
-        }
-        else
-        {
-            mountainMesh.gameObject.SetActive(false);
-        }
+        mountainMesh.gameObject.SetActive(HexTileData.TileType == HexTileTypes.STONE);
+        smallVillageObject.gameObject.SetActive(HexTileData.TileType == HexTileTypes.VILLAGE_LARGE || HexTileData.TileType == HexTileTypes.VILLAGE_SMALL);
+        largeVillageObject.gameObject.SetActive(HexTileData.TileType == HexTileTypes.VILLAGE_LARGE);
+
     }
 
 	public void SetTilePos() {
